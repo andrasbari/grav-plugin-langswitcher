@@ -11,6 +11,11 @@ en:
     LANGUAGE_DISPLAY_HELP: 'The format of the language display, either "long" (e.g. English), or "short" (e.g. EN)'
     LANGUAGE_DISPLAY_LONG: 'Long'
     LANGUAGE_DISPLAY_SHORT: 'Short'
+    LANGUAGE_DISPLAY_FLAG: 'Flag'
+    LANGUAGE_DISPLAY_FLAG_LONG: 'Flag Long'
+    LANGUAGE_DISPLAY_FLAG_SHORT: 'Flag Short'
+    LANGUAGE_DISPLAY_LONG_FLAG: 'Long Flag'
+    LANGUAGE_DISPLAY_SHORT_FLAG: 'Short Flag'
 
 ru:
   PLUGIN_LANGSWITCHER:
