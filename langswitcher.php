@@ -1,4 +1,5 @@
 <?php
+
 namespace Grav\Plugin;
 
 use Composer\Autoload\ClassLoader;
@@ -43,7 +44,7 @@ class LangSwitcherPlugin extends Plugin
         }
 
         $this->enable([
-            'onTwigInitialized'   => ['onTwigInitialized', 0],
+            'onTwigInitialized' => ['onTwigInitialized', 0],
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
             'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
         ]);
@@ -53,7 +54,7 @@ class LangSwitcherPlugin extends Plugin
     public function onTwigInitialized()
     {
         $this->grav['twig']->twig()->addFunction(
-            new \Twig_SimpleFunction('native_name', function($key) {
+            new \Twig_SimpleFunction('native_name', function ($key) {
                 return LanguageCodes::getNativeName($key);
             })
         );
@@ -83,20 +84,21 @@ class LangSwitcherPlugin extends Plugin
         $languages = $this->grav['language']->getLanguages();
         $data->languages = $languages;
 
-        if ($this->config->get('plugins.langswitcher.untranslated_pages_behavior') !== 'none') {
-            $translated_pages = [];
-            foreach ($languages as $language) {
-                $translated_pages[$language] = null;
-                $page_name_without_ext = substr($page->name(), 0, -(strlen($page->extension())));
-                $translated_page_path = $page->path() . DS . $page_name_without_ext . '.' . $language . '.md';
-                if (file_exists($translated_page_path)) {
-                    $translated_page = new Page();
-                    $translated_page->init(new \SplFileInfo($translated_page_path), $language . '.md');
-                    $translated_pages[$language] = $translated_page;
-                }
+        $translated_pages = [];
+        $translated_page_count = 0;
+        foreach ($languages as $language) {
+            $translated_pages[$language] = null;
+            $page_name_without_ext = substr($page->name(), 0, -(strlen($page->extension())));
+            $translated_page_path = $page->path() . DS . $page_name_without_ext . '.' . $language . '.md';
+            if (file_exists($translated_page_path)) {
+                $translated_page = new Page();
+                $translated_page->init(new \SplFileInfo($translated_page_path), $language . '.md');
+                $translated_pages[$language] = $translated_page;
+                $translated_page_count++;
             }
-            $data->translated_pages = $translated_pages;
         }
+        $data->translated_pages = $translated_pages;
+        $data->translated_page_count = $translated_page_count;
 
         $data->current = $this->grav['language']->getLanguage();
 
@@ -107,7 +109,8 @@ class LangSwitcherPlugin extends Plugin
         }
     }
 
-    public function getNativeName($code) {
+    public function getNativeName($code)
+    {
 
     }
 }

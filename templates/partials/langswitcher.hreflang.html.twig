@@ -1,9 +1,20 @@
-{% set langobj = grav['language'] %}
-{% for key in langswitcher.languages %}
-{% if key == langswitcher.current %}
-	{% set lang_url = page.url is same as('/') ? '' : page.url %}
-{% else %}
-	{% set lang_url = (langobj.getLanguageURLPrefix(key) ~ langswitcher.page_route ~ page.urlExtension ?: '')|rtrim('/') %}
+{% if langswitcher.translated_page_count > 1 %}
+    {% for language in langswitcher.languages %}
+        {% set show_language = true %}
+        {% if language == langswitcher.current %}
+            {% set lang_url = page.url is same as('/') ? '' : page.url %}
+        {% else %}
+            {% set base_lang_url = base_url_simple ~ grav.language.getLanguageURLPrefix(language) %}
+            {% set translated_page = langswitcher.translated_pages[language] %}
+            {% if (not translated_page) or (not translated_page.published) %}
+                {% set show_language = false %}
+            {% else %}
+                {% set lang_url = base_lang_url ~ translated_page.route %}
+            {% endif %}
+        {% endif %}
+        {% if show_language %}
+            <link rel="alternate" hreflang="{{ language }}" href="{{ uri.base ~ lang_url ~ uri.params }}"/>
+        {% else %}
+        {% endif %}
+    {% endfor %}
 {% endif %}
-<link rel="alternate" hreflang="{{ key }}" href="{{ uri.base ~ lang_url ~ uri.params }}" />
-{% endfor %}
